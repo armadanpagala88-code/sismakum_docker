@@ -53,6 +53,9 @@ RUN if [ -f ./backend/.env.example ]; then cp ./backend/.env.example ./backend/.
 WORKDIR /var/www/html/backend
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
+# Regenerate autoload without scripts
+RUN composer dump-autoload --no-scripts
+
 # Laravel artisan commands
 RUN php artisan key:generate --force 2>/dev/null || true
 RUN php artisan storage:link 2>/dev/null || true
@@ -76,29 +79,7 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY supervisord.conf /etc/supervisord.conf
 
 # Create startup script
-RUN cat > /start.sh << 'EOF'
-#!/bin/bash
-set -e
-
-echo "Starting SISMAKUM Application..."
-
-cd /var/www/html/backend
-
-# Run migrations if DB is available
-php artisan migrate --force 2>/dev/null || echo "Migration skipped (DB not ready)"
-
-# Clear and cache config
-php artisan config:clear 2>/dev/null || true
-php artisan route:clear 2>/dev/null || true
-php artisan view:clear 2>/dev/null || true
-
-# Set permissions
-chown -R www-data:www-data /var/www/html/backend/storage
-chmod -R 775 /var/www/html/backend/storage
-
-echo "Starting Supervisor..."
-exec /usr/bin/supervisord -c /etc/supervisord.conf
-EOF
+COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
 # Expose port
