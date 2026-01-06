@@ -1,0 +1,69 @@
+# Apache Configuration untuk SISMAKUM
+# Copy file ini ke /etc/apache2/sites-available/sismakum.conf
+# Lalu aktifkan dengan: sudo a2ensite sismakum.conf
+
+<VirtualHost *:80>
+    ServerName your-domain.com
+    ServerAlias www.your-domain.com
+    
+    DocumentRoot /var/www/sismakum/backend/public
+    
+    <Directory /var/www/sismakum/backend/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+        
+        # Handle Vue Router (SPA) - semua route selain file yang ada
+        RewriteEngine On
+        RewriteBase /
+        
+        # Jika file/folder ada, gunakan itu
+        RewriteCond %{REQUEST_FILENAME} -f [OR]
+        RewriteCond %{REQUEST_FILENAME} -d
+        RewriteRule ^ - [L]
+        
+        # Jika bukan API route, kirim ke index.html (Vue Router)
+        RewriteCond %{REQUEST_URI} !^/api
+        RewriteRule ^ /index.html [L]
+        
+        # API routes akan di-handle oleh Laravel .htaccess
+    </Directory>
+    
+    # Increase upload size
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    
+    ErrorLog ${APACHE_LOG_DIR}/sismakum_error.log
+    CustomLog ${APACHE_LOG_DIR}/sismakum_access.log combined
+</VirtualHost>
+
+# HTTPS Configuration (setelah setup SSL)
+# Uncomment dan sesuaikan setelah mendapatkan SSL certificate
+
+# <VirtualHost *:443>
+#     ServerName your-domain.com
+#     ServerAlias www.your-domain.com
+#     
+#     DocumentRoot /var/www/sismakum/backend/public
+#     
+#     SSLEngine on
+#     SSLCertificateFile /etc/letsencrypt/live/your-domain.com/fullchain.pem
+#     SSLCertificateKeyFile /etc/letsencrypt/live/your-domain.com/privkey.pem
+#     
+#     <Directory /var/www/sismakum/backend/public>
+#         Options -Indexes +FollowSymLinks
+#         AllowOverride All
+#         Require all granted
+#         
+#         RewriteEngine On
+#         RewriteBase /
+#         RewriteCond %{REQUEST_FILENAME} -f [OR]
+#         RewriteCond %{REQUEST_FILENAME} -d
+#         RewriteRule ^ - [L]
+#         RewriteCond %{REQUEST_URI} !^/api
+#         RewriteRule ^ /index.html [L]
+#     </Directory>
+#     
+#     ErrorLog ${APACHE_LOG_DIR}/sismakum_error.log
+#     CustomLog ${APACHE_LOG_DIR}/sismakum_access.log combined
+# </VirtualHost>

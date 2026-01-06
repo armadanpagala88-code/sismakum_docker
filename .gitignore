@@ -1,0 +1,10 @@
+# Ignore large backup files
+*.zip
+
+# Laravel specific ignores
+backend/vendor/
+backend/.env
+backend/storage/logs/*.log
+
+# Node modules
+frontend/node_modules/
