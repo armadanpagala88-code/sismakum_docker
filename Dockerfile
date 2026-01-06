@@ -53,8 +53,11 @@ RUN if [ -f ./backend/.env.example ]; then cp ./backend/.env.example ./backend/.
 WORKDIR /var/www/html/backend
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Regenerate autoload without scripts
-RUN composer dump-autoload --no-scripts
+# Regenerate autoload without dev packages
+RUN composer dump-autoload --no-dev --optimize --no-scripts
+
+# Clear any cached bootstrap files
+RUN rm -rf bootstrap/cache/*.php 2>/dev/null || true
 
 # Laravel artisan commands
 RUN php artisan key:generate --force 2>/dev/null || true
