@@ -71,7 +71,7 @@
         <div
           v-for="catatan in pengusulan.catatan_revisi"
           :key="catatan.id"
-          class="bg-white rounded-lg p-4 border border-yellow-200"
+          class="bg-white rounded-lg p-4 border border-yellow-200 relative"
         >
           <div class="flex justify-between items-start mb-2">
             <span
@@ -80,9 +80,18 @@
             >
               {{ getTipeLabel(catatan.tipe) }}
             </span>
-            <span class="text-xs text-gray-500">
-              {{ formatDate(catatan.created_at) }} oleh {{ catatan.creator?.name }}
-            </span>
+            <div class="flex items-center space-x-3">
+              <span class="text-xs text-gray-500">
+                {{ formatDateTime(catatan.created_at) }} oleh {{ catatan.creator?.name }}
+              </span>
+              <button
+                @click="deleteCatatan(catatan)"
+                class="text-red-500 hover:text-red-700"
+                title="Hapus catatan"
+              >
+                🗑️
+              </button>
+            </div>
           </div>
           <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ catatan.catatan }}</p>
           <!-- Word File Download Link -->
@@ -211,6 +220,17 @@ function formatDate(date) {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
+  })
+}
+
+function formatDateTime(date) {
+  if (!date) return '-'
+  return new Date(date).toLocaleDateString('id-ID', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   })
 }
 
@@ -406,6 +426,38 @@ async function submitReview() {
   } catch (error) {
     console.error('Error submitting review:', error)
     alert(error.response?.data?.message || 'Gagal menyimpan review')
+  }
+}
+
+async function deleteCatatan(catatan) {
+  const confirmed = confirm(`Apakah Anda yakin ingin menghapus catatan ini? Tindakan ini tidak dapat dibatalkan.`)
+  if (!confirmed) return
+
+  try {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${apiBaseUrl}/api/catatan-revisi/${catatan.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        alert('Session expired. Silakan login kembali.')
+        router.push('/login')
+        return
+      }
+      const data = await response.json()
+      throw new Error(data.message || 'Gagal menghapus catatan')
+    }
+    
+    alert('Catatan berhasil dihapus')
+    await loadPengusulan() // Refresh data
+  } catch (error) {
+    console.error('Error deleting catatan:', error)
+    alert(error.message || 'Gagal menghapus catatan')
   }
 }
 

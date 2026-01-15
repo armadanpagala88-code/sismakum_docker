@@ -364,5 +364,27 @@ class PengusulanPerbubController extends Controller
 
         return response()->json(['message' => 'Deleted successfully']);
     }
+
+    public function deleteCatatanRevisi(Request $request, $id)
+    {
+        $catatan = CatatanRevisi::findOrFail($id);
+        
+        // Only admin, bagian_hukum, and verifikator can delete catatan
+        if (!in_array($request->user()->role, ['admin', 'bagian_hukum', 'verifikator'])) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Delete associated files if exist
+        if ($catatan->file_path) {
+            Storage::disk('public')->delete($catatan->file_path);
+        }
+        if ($catatan->file_review_pdf) {
+            Storage::disk('public')->delete($catatan->file_review_pdf);
+        }
+
+        $catatan->delete();
+
+        return response()->json(['message' => 'Catatan berhasil dihapus']);
+    }
 }
 
