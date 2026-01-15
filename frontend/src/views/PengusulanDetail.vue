@@ -440,6 +440,13 @@ function formatDateTime(date) {
   return new Date(date).toLocaleString('id-ID')
 }
 
+// Helper function to encode path for URL while preserving slashes
+function encodePathForUrl(path) {
+  if (!path) return ''
+  // Split by slash, encode each segment, then rejoin with slash
+  return path.split('/').map(segment => encodeURIComponent(segment)).join('/')
+}
+
 function getCatatanClass(tipe) {
   const classes = {
     revisi: 'bg-yellow-50 border-yellow-300',
@@ -470,7 +477,7 @@ function getTipeLabel(tipe) {
 async function downloadDokumen(dok) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(dok.path_file)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodePathForUrl(dok.path_file)}`
     
     const response = await fetch(url, {
       method: 'GET',
@@ -508,7 +515,7 @@ async function downloadDokumen(dok) {
 async function downloadReviewFile(catatan) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(catatan.file_path)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodePathForUrl(catatan.file_path)}`
     
     const response = await fetch(url, {
       method: 'GET',
