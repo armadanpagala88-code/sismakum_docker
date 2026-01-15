@@ -300,6 +300,33 @@
       </div>
     </section>
 
+    <!-- Banner Section -->
+    <section v-if="bannerList.length > 0" class="section bg-white py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+          <a
+            v-for="banner in bannerList"
+            :key="banner.id"
+            :href="banner.url || '#'"
+            :target="banner.url ? '_blank' : '_self'"
+            :rel="banner.url ? 'noopener noreferrer' : ''"
+            class="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+          >
+            <img
+              v-if="banner.logo"
+              :src="getImageUrl(banner.logo)"
+              :alt="banner.nama"
+              class="h-16 md:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+              @error="handleImageError"
+            />
+            <div v-else class="h-16 md:h-20 flex items-center">
+              <span class="text-gray-400 text-sm">{{ banner.nama }}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- Sambutan Kepala Bagian Hukum -->
     <section v-if="website.sambutan" class="section bg-gray-50" id="sambutan">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -639,33 +666,6 @@
               v-html="website.contact.content"
             ></div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Banner Section -->
-    <section v-if="bannerList.length > 0" class="section bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-          <a
-            v-for="banner in bannerList"
-            :key="banner.id"
-            :href="banner.url || '#'"
-            :target="banner.url ? '_blank' : '_self'"
-            :rel="banner.url ? 'noopener noreferrer' : ''"
-            class="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-          >
-            <img
-              v-if="banner.logo"
-              :src="getImageUrl(banner.logo)"
-              :alt="banner.nama"
-              class="h-16 md:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
-              @error="handleImageError"
-            />
-            <div v-else class="h-16 md:h-20 flex items-center">
-              <span class="text-gray-400 text-sm">{{ banner.nama }}</span>
-            </div>
-          </a>
         </div>
       </div>
     </section>
