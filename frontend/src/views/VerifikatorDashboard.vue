@@ -245,11 +245,11 @@ function printData() {
         <p>Total: ${pengusulan.value.length} usulan</p>
       </div>
       
-      <script>
+      <scr` + `ipt>
         window.onload = function() { window.print(); }
-      </script>
-    </body>
-    </html>
+      </scr` + `ipt>
+    </bo` + `dy>
+    </ht` + `ml>
   `)
   printWindow.document.close()
 }

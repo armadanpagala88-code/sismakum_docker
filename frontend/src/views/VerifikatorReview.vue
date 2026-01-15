@@ -587,11 +587,11 @@ function printDetail() {
         <p>SISMAKUM - Kabupaten Konawe</p>
       </div>
       
-      <script>
+      <scr` + `ipt>
         window.onload = function() { window.print(); }
-      </script>
-    </body>
-    </html>
+      </scr` + `ipt>
+    </bo` + `dy>
+    </ht` + `ml>
   `)
   printWindow.document.close()
 }
