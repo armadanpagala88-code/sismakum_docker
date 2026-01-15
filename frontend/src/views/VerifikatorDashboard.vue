@@ -84,13 +84,19 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ formatDate(item.tanggal_surat) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
                 <router-link
                   :to="`/dashboard/verifikator/pengusulan/${item.id}`"
                   class="text-blue-600 hover:text-blue-900"
                 >
                   Review
                 </router-link>
+                <button
+                  @click="confirmDelete(item)"
+                  class="text-red-600 hover:text-red-900"
+                >
+                  Hapus
+                </button>
               </td>
             </tr>
           </tbody>
@@ -148,6 +154,20 @@ async function loadPengusulan() {
     }
   } catch (error) {
     console.error('Error loading pengusulan:', error)
+  }
+}
+
+async function confirmDelete(item) {
+  const confirmed = confirm(`Apakah Anda yakin ingin menghapus usulan "${item.judul_perbub}"? Tindakan ini tidak dapat dibatalkan.`)
+  if (confirmed) {
+    try {
+      await pengusulanStore.deletePengusulan(item.id)
+      alert('Usulan berhasil dihapus')
+      await loadPengusulan()
+    } catch (error) {
+      console.error('Error deleting pengusulan:', error)
+      alert(error.response?.data?.message || 'Gagal menghapus usulan')
+    }
   }
 }
 
