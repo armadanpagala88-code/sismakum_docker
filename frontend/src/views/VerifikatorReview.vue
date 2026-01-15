@@ -52,7 +52,7 @@
           >
             <span class="text-sm text-gray-900">{{ doc.nama_file }}</span>
             <a
-              :href="`${apiBaseUrl}/api/dokumen/${encodeURIComponent(doc.path_file)}`"
+              :href="`${apiBaseUrl}/api/dokumen/${encodePathForUrl(doc.path_file)}`"
               target="_blank"
               class="text-blue-600 hover:text-blue-800 text-sm"
               @click.prevent="downloadDokumen(doc)"
@@ -198,6 +198,13 @@ const reviewForm = ref({
 })
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || window.location.origin
 
+// Helper function to encode path for URL while preserving slashes
+function encodePathForUrl(path) {
+  if (!path) return ''
+  // Split by slash, encode each segment, then rejoin with slash
+  return path.split('/').map(segment => encodeURIComponent(segment)).join('/')
+}
+
 function formatDate(date) {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('id-ID', {
@@ -267,7 +274,7 @@ function handlePdfChange(event) {
 async function downloadDokumen(doc) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(doc.path_file)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodePathForUrl(doc.path_file)}`
     
     const response = await fetch(url, {
       method: 'GET',
@@ -304,7 +311,7 @@ async function downloadDokumen(doc) {
 async function downloadReviewFile(catatan) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(catatan.file_path)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodePathForUrl(catatan.file_path)}`
     
     const response = await fetch(url, {
       method: 'GET',
@@ -341,7 +348,7 @@ async function downloadReviewFile(catatan) {
 async function downloadPdfFile(catatan) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(catatan.file_review_pdf)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodePathForUrl(catatan.file_review_pdf)}`
     
     const response = await fetch(url, {
       method: 'GET',
