@@ -97,14 +97,14 @@
             </a>
           </div>
           <!-- PDF File Download Link -->
-          <div v-if="catatan.file_pdf_path" class="mt-2">
+          <div v-if="catatan.file_review_pdf" class="mt-2">
             <a
-              :href="`${apiBaseUrl}/storage/${catatan.file_pdf_path}`"
+              :href="`${apiBaseUrl}/storage/${catatan.file_review_pdf}`"
               target="_blank"
               class="inline-flex items-center text-sm text-red-600 hover:text-red-800"
               @click.prevent="downloadPdfFile(catatan)"
             >
-              📕 {{ catatan.file_pdf_name || 'Download PDF' }}
+              📕 {{ catatan.file_review_pdf_name || 'Download PDF' }}
             </a>
           </div>
           <div v-if="catatan.is_resolved" class="mt-2 text-xs text-green-600">
@@ -341,7 +341,7 @@ async function downloadReviewFile(catatan) {
 async function downloadPdfFile(catatan) {
   try {
     const token = localStorage.getItem('token')
-    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(catatan.file_pdf_path)}`
+    const url = `${apiBaseUrl}/api/dokumen/${encodeURIComponent(catatan.file_review_pdf)}`
     
     const response = await fetch(url, {
       method: 'GET',
@@ -364,7 +364,7 @@ async function downloadPdfFile(catatan) {
     const downloadUrl = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = downloadUrl
-    link.download = catatan.file_pdf_name || 'review_document.pdf'
+    link.download = catatan.file_review_pdf_name || 'review_document.pdf'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)

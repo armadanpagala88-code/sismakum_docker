@@ -188,8 +188,8 @@ class PengusulanPerbubController extends Controller
             'catatan' => $request->catatan,
             'file_path' => $filePath,
             'file_name' => $fileName,
-            'file_pdf_path' => $filePdfPath,
-            'file_pdf_name' => $filePdfName,
+            'file_review_pdf' => $filePdfPath,
+            'file_review_pdf_name' => $filePdfName,
         ]);
 
         // Send email notification to dinas
